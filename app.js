@@ -403,7 +403,6 @@
   /* ------------------------------------------------------------------ */
   /* Aviso de cookies + Google Consent Mode                              */
   /* ------------------------------------------------------------------ */
-  const banner = document.getElementById('cookie-banner');
   function updateConsent(granted) {
     if (typeof window.gtag !== 'function') return;
     const state = granted ? 'granted' : 'denied';
@@ -414,6 +413,8 @@
       analytics_storage: state,
     });
   }
+  function initCookieBanner() {
+  const banner = document.getElementById('cookie-banner');
   if (banner) {
     const consent = localStorage.getItem('rutacoste-cookies');
     if (!consent) {
@@ -431,5 +432,12 @@
       updateConsent(false);
       banner.style.display = 'none';
     });
+  }
+  }
+  // app.js se carga en algunas páginas antes del banner: esperamos a que el DOM esté listo
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCookieBanner);
+  } else {
+    initCookieBanner();
   }
 })();
